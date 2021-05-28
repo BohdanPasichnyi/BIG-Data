@@ -1,0 +1,54 @@
+---
+title: "Лабораторна робота № 1. Завантаження та зчитування даних."
+
+output:
+  md_document:
+    variant: markdown_github
+---
+
+1. За допомогою download.file() завантажте любий excel файл з порталу
+http://data.gov.ua та зчитайте його (xls, xlsx – бінарні формати, тому
+встановить mode = “wb”. Виведіть перші 6 строк отриманого фрейму
+даних.
+
+
+```{r}
+url = 'https://data.gov.ua/dataset/95c82130-4310-4edb-b7e5-f01b59385eb0/resource/a9ee1ed3-9277-4bc7-99ec-85f951c7b3c5/download/active_declarations_by_doctor.csv'
+d1 <- download.file(url,destfile="active_declarations_by_doctor.csv", mode = "wb" )
+df1 <- read.csv("active_declarations_by_doctor.csv")
+head(df1, 6)
+```
+2. За допомогою download.file() завантажте файл getdata_data_ss06hid.csv за
+посиланням
+https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv та
+завантажте дані в R. Code book, що пояснює значення змінних
+знаходиться за посиланням
+https://www.dropbox.com/s/dijv0rlwo4mryv5/PUMSDataDict06.pdf?dl=0
+
+
+```{r}
+url = 'https://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Fss06hid.csv'
+destfile="getdata%2Fdata%2Fss06hid.csv"
+d2 <- download.file(url,destfile,mode = "wb" )
+df2 <- read.csv("getdata%2Fdata%2Fss06hid.csv", encoding='utf8')
+head(df2[1:6])
+```
+
+Необхідно знайти, скільки property мають value $1000000+
+```{r}
+nrow(df2[df2$VAL > 1000000,])
+```
+Зчитайте xml файл за посиланням
+http://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml
+Скільки ресторанів мають zipcode 21231?
+
+
+```{r}
+library("XML")
+doc <-  xmlTreeParse("http://d396qusza40orc.cloudfront.net/getdata%2Fdata%2Frestaurants.xml",useInternal = TRUE)
+# Exract the root node form the xml file.
+rootnode <- xmlRoot(doc)
+sum(xpathSApply(rootnode,"//zipcode",xmlValue) == 21231)
+```
+
+
